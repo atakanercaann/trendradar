@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TrendRadar — Content Opportunity Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #050505;
+    --bg2: #0a0a0a;
+    --bg3: #0d0d0d;
+    --border: #161616;
+    --border2: #1c1c1c;
+    --border3: #2a2a2a;
+    --text: #e5e5e5;
+    --text2: #8a8a8a;
+    --text3: #555;
+    --text4: #333;
+    --green: #00ff94;
+    --cyan: #00d4ff;
+    --purple: #a78bfa;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --orange: #ff6b35;
+    --font: 'DM Sans', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); line-height: 1.4; }
+  button { cursor: pointer; font-family: var(--font); }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+  .header { border-bottom: 1px solid var(--border); padding: 0 24px; position: sticky; top: 0; z-index: 50; background: rgba(5,5,5,0.92); backdrop-filter: blur(12px); }
+  .header-inner { max-width: 1440px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 54px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 28px; height: 28px; background: linear-gradient(135deg, var(--green), var(--cyan)); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .logo-text { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; }
+  .logo-badge { font-size: 9px; color: var(--text4); background: var(--bg2); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; letter-spacing: 0.08em; }
+  .header-right { display: flex; gap: 8px; align-items: center; }
+  .location-pill { font-size: 10px; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); padding: 4px 10px; border-radius: 6px; }
+  .settings-btn { width: 28px; height: 28px; background: var(--bg2); border: 1px solid var(--border); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--text3); }
+  .main { max-width: 1440px; margin: 0 auto; padding: 24px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+  .kpi-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .kpi-label { font-size: 9px; color: var(--text4); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
+  .kpi-val { font-size: 26px; font-weight: 700; font-family: var(--mono); margin-bottom: 4px; }
+  .kpi-sub { font-size: 10px; color: var(--text3); }
+  .mode-tabs { display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+  .mode-tabs::-webkit-scrollbar { display: none; }
+  .mode-btn { background: var(--bg2); border: 1px solid var(--border); color: var(--text3); padding: 7px 14px; border-radius: 7px; font-size: 11px; font-weight: 500; white-space: nowrap; transition: all 0.15s; display: flex; align-items: center; gap: 5px; }
+  .mode-btn:hover { border-color: var(--border3); color: var(--text2); }
+  .mode-btn.active { background: rgba(0,255,148,0.06); border-color: rgba(0,255,148,0.3); color: var(--green); }
+  .filter-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 12px; }
+  .filter-bar-left h2 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .filter-bar-left p { font-size: 11px; color: var(--text3); }
+  .platform-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .plat-btn { background: transparent; border: 1px solid transparent; color: var(--text3); padding: 5px 12px; border-radius: 6px; font-size: 11px; transition: all 0.15s; }
+  .plat-btn.active { background: var(--bg3); border-color: var(--border3); color: var(--text); }
+  .trend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+  .trend-card { background: var(--bg3); border: 1px solid var(--border2); border-radius: 12px; overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s; position: relative; }
+  .trend-card:hover { border-color: var(--border3); transform: translateY(-2px); }
+  .card-thumb { position: relative; height: 180px; overflow: hidden; background: #111; }
+  .card-thumb img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: opacity 0.2s; }
+  .trend-card:hover .card-thumb img { opacity: 0.95; }
+  .thumb-badges-top { position: absolute; top: 8px; left: 8px; display: flex; gap: 5px; flex-wrap: wrap; }
+  .thumb-badges-bot { position: absolute; bottom: 8px; left: 8px; display: flex; gap: 5px; }
+  .thumb-badges-bot-r { position: absolute; bottom: 8px; right: 8px; }
+  .platform-badge,.stage-badge,.worth-badge { font-size: 9px; padding: 2px 7px; border-radius: 4px; letter-spacing: 0.08em; }
+  .platform-badge,.stage-badge { font-weight: 700; }
+  .worth-badge { font-weight: 600; }
+  .worth-yes { background: rgba(0,255,148,0.12); border: 1px solid rgba(0,255,148,0.3); color: var(--green); }
+  .worth-no { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+  .audio-badge { background: rgba(0,0,0,0.8); color: #a78bfa; font-size: 9px; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(124,58,237,0.3); }
+  .trend-score-badge { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); border-radius: 8px; padding: 4px 8px; text-align: center; border: 1px solid #33333366; }
+  .trend-score-num { font-size: 18px; font-weight: 700; font-family: var(--mono); line-height: 1; }
+  .trend-score-label { font-size: 7px; color: var(--text4); letter-spacing: 0.1em; }
+  .card-body { padding: 12px 14px 14px; }
+  .creator-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .creator-handle { font-size: 11px; font-weight: 600; color: #e5e5e5; }
+  .creator-followers { font-size: 10px; color: var(--text3); margin-left: 6px; }
+  .card-meta { display: flex; gap: 5px; align-items: center; }
+  .time-ago { font-size: 9px; color: var(--text3); }
+  .breakout-chip { font-size: 9px; background: var(--bg2); border: 1px solid var(--border2); color: var(--text3); padding: 1px 5px; border-radius: 3px; font-family: var(--mono); }
+  .card-caption { font-size: 11px; color: #9ca3af; line-height: 1.5; margin-bottom: 12px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .metrics-row { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
+  .metric-chip { background: #111; border: 1px solid var(--border2); border-radius: 4px; padding: 3px 6px; font-size: 9px; color: #888; font-family: var(--mono); }
+  .score-pills { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 12px; }
+  .score-pill { display: flex; flex-direction: column; align-items: center; gap: 2px; border-radius: 8px; padding: 6px 4px; min-width: 0; }
+  .pill-num { font-size: 15px; font-weight: 700; font-family: var(--mono); }
+  .pill-label { font-size: 8px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; text-align: center; line-height: 1.2; }
+  .why-box { background: #111; border: 1px solid var(--border2); border-radius: 8px; padding: 10px; }
+  .why-label { font-size: 9px; color: var(--text4); letter-spacing: 0.1em; margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
+  .why-text { font-size: 10px; color: #6b7280; line-height: 1.5; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .signal-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 6px; }
+  .signal-tag { background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.15); color: var(--cyan); font-size: 9px; padding: 1px 6px; border-radius: 3px; }
+  .sat-warning { margin-top: 8px; background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: 6px; padding: 8px 10px; font-size: 10px; color: #f87171; line-height: 1.4; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; backdrop-filter: blur(8px); }
+  .modal-box { background: #0a0a0a; border: 1px solid var(--border2); border-radius: 16px; max-width: 780px; width: 100%; overflow: hidden; animation: fadeUp 0.2s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border); gap: 12px; }
+  .modal-header-left { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .modal-close { background: none; border: 1px solid var(--border3); color: var(--text3); padding: 4px 10px; border-radius: 5px; font-size: 11px; }
+  .modal-body { display: grid; grid-template-columns: 1fr 1.6fr; }
+  .modal-left { border-right: 1px solid var(--border); padding: 20px; }
+  .modal-right { padding: 20px; overflow-y: auto; max-height: 70vh; }
+  .modal-thumb { width: 100%; border-radius: 10px; margin-bottom: 14px; object-fit: cover; max-height: 260px; }
+  .modal-caption { font-size: 11px; color: #7a7a7a; line-height: 1.6; margin-bottom: 14px; }
+  .audio-row { background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 7px 10px; margin-bottom: 14px; display: flex; gap: 6px; align-items: center; }
+  .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .metric-box { background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 8px 10px; }
+  .metric-box-label { font-size: 9px; color: var(--text3); margin-bottom: 2px; }
+  .metric-box-val { font-size: 13px; font-weight: 600; color: #d4d4d4; font-family: var(--mono); }
+  .master-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .master-score-num { font-size: 48px; font-weight: 700; font-family: var(--mono); line-height: 1; }
+  .score-bars-box { background: #0d0d0d; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 16px; }
+  .score-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .score-bar-label { width: 100px; font-size: 10px; color: var(--text3); font-family: var(--mono); flex-shrink: 0; }
+  .score-bar-track { flex: 1; height: 4px; background: #1a1a1a; border-radius: 2px; overflow: hidden; }
+  .score-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+  .score-bar-num { width: 28px; text-align: right; font-size: 10px; font-family: var(--mono); font-weight: 600; }
+  .section-label { font-size: 9px; color: var(--text4); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+  .why-para { font-size: 11px; color: #8a8a8a; line-height: 1.6; margin-bottom: 10px; }
+  .idea-box { background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; font-size: 11px; color: #aaa; }
+  .idea-num { color: var(--green); font-size: 10px; margin-right: 6px; }
+  .adapt-box { background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 10px; margin-top: 10px; }
+  .adapt-label { font-size: 9px; color: var(--text3); letter-spacing: 0.1em; margin-bottom: 6px; text-transform: uppercase; }
+  .adapt-text { font-size: 11px; color: #7a7a7a; line-height: 1.6; }
+  .footer { margin-top: 32px; text-align: center; font-size: 10px; color: #2a2a2a; letter-spacing: 0.06em; padding-bottom: 32px; }
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .filter-bar { flex-direction: column; align-items: flex-start; }
+    .modal-body { grid-template-columns: 1fr; }
+    .modal-left { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+  @media (max-width: 600px) {
+    .main { padding: 16px; }
+    .header { padding: 0 16px; }
+    .kpi-grid { grid-template-columns: 1fr; }
+    .trend-grid { grid-template-columns: 1fr; }
+    .score-pills { grid-template-columns: repeat(2, 1fr); }
+    .metrics-grid { grid-template-columns: 1fr 1fr; }
+    .master-row { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">◈</div>
+      <span class="logo-text">TrendRadar</span>
+      <span class="logo-badge">BETA</span>
+    </div>
+    <div class="header-right">
+      <div class="location-pill">📍 Ontario, CA · English</div>
+      <button class="settings-btn" aria-label="Settings">⚙</button>
+    </div>
+  </div>
+</header>
+<main class="main">
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-label">Active Trends</div><div class="kpi-val" style="color: var(--cyan)">6</div><div class="kpi-sub">in last 14 days</div></div>
+    <div class="kpi-card"><div class="kpi-label">Emerging Now</div><div class="kpi-val" style="color: var(--green)">3</div><div class="kpi-sub">still early stage</div></div>
+    <div class="kpi-card"><div class="kpi-label">Avg Opportunity</div><div class="kpi-val" style="color: var(--purple)">79<span style="font-size:14px; color: var(--text4)">/100</span></div><div class="kpi-sub">across all trends</div></div>
+    <div class="kpi-card"><div class="kpi-label">Worth Adapting</div><div class="kpi-val" style="color: var(--amber)">5</div><div class="kpi-sub">of current trends</div></div>
+  </div>
+  <div class="mode-tabs" id="modeTabs">
+    <button class="mode-btn" data-mode="trending_now">🔥 Trending Now</button>
+    <button class="mode-btn active" data-mode="early_opportunities">⚡ Early Opportunities</button>
+    <button class="mode-btn" data-mode="small_creator_breakouts">🚀 Breakouts</button>
+    <button class="mode-btn" data-mode="high_quality_engagement">💎 Best Engagement</button>
+    <button class="mode-btn" data-mode="repeatable_formats">♻️ Repeatable</button>
+    <button class="mode-btn" data-mode="local_trends">📍 Local</button>
+    <button class="mode-btn" data-mode="save_worthy">🔖 Save-Worthy</button>
+    <button class="mode-btn" data-mode="share_driven">↗️ Share-Driven</button>
+    <button class="mode-btn" data-mode="overrated_viral">👻 Overrated</button>
+  </div>
+  <div class="filter-bar">
+    <div class="filter-bar-left">
+      <h2 id="modeTitle">⚡ Early Opportunities</h2>
+      <p id="modeDesc">Rising fast, still usable · <span id="resultCount">6</span> results</p>
+    </div>
+    <div class="platform-filters">
+      <button class="plat-btn active" data-plat="ALL">All Platforms</button>
+      <button class="plat-btn" data-plat="TIKTOK">TikTok</button>
+      <button class="plat-btn" data-plat="INSTAGRAM">Instagram</button>
+    </div>
+  </div>
+  <div class="trend-grid" id="trendGrid"></div>
+  <div class="footer">TRENDRADAR · CONTENT OPPORTUNITY INTELLIGENCE · ONTARIO, CA · EN</div>
+</main>
+<div class="modal-overlay" id="modal" style="display:none" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-header-left" id="modalHeaderLeft"></div>
+      <button class="modal-close" onclick="document.getElementById('modal').style.display='none'">✕ Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-left" id="modalLeft"></div>
+      <div class="modal-right" id="modalRight"></div>
+    </div>
+  </div>
+</div>
+<script>
+const VIDEOS = [
+  { id:"1", platform:"TIKTOK", thumbnail:"https://picsum.photos/seed/tt001/400/600", caption:"my entire morning skincare routine for glowing skin ✨ #skincare #morningroutine #grwm", postedAt:new Date(Date.now()-18*3600000).toISOString(), category:"BEAUTY", audio:"Your Girl (sped up) - Chris Brown", audioTrending:true, creator:{handle:"glowwithsophia", name:"Sophia Glow", followers:18400, bucket:"MICRO"}, metrics:{views:342000, likes:28400, comments:1890, shares:4200, saves:6800}, scores:{reach:78, engagement:88, velocity:84, freshness:76, repro:92, satRisk:22, opportunity:87, local:85, fit:95, trend:86, stage:"RISING", breakout:"18.6x"}, insight:{whyTrending:"Strong save + share rate from a micro creator in Toronto. The audio is trending and the GRWM format is platform-native. Breakout ratio of 18.6x is exceptional.", signals:["18.6x follower breakout","Save rate 4× benchmark","Trending audio usable now"], worthAdapting:true, satWarning:null, ideas:["Your 5-min GRWM with this trending audio","Skincare routine with product dupe angle","Morning routine: what I actually do vs what I post"], tips:"Use the same audio, face-to-camera, specific claim hook in first 2 seconds."} },
+  { id:"2", platform:"INSTAGRAM", thumbnail:"https://picsum.photos/seed/ig002/400/600", caption:"cozy evening routine this winter 🕯️ telling him what I actually need #couplegoals", postedAt:new Date(Date.now()-10*3600000).toISOString(), category:"COUPLE CONTENT", audio:"Golden Hour - JVKE", audioTrending:false, creator:{handle:"lifewithlena_ca", name:"Lena Hartmann", followers:9200, bucket:"NANO"}, metrics:{views:187000, likes:11200, comments:2340, shares:3100, saves:4500}, scores:{reach:82, engagement:84, velocity:91, freshness:90, repro:88, satRisk:14, opportunity:91, local:90, fit:88, trend:88, stage:"EMERGING", breakout:"20.3x"}, insight:{whyTrending:"A nano creator hitting 187K views is a genuine breakout. Couple + evening routine + emotional authenticity = strong comment engagement. Posted only 10h ago.", signals:["20.3x follower breakout (nano!)","10h old — peak velocity window","Comment rate 3× benchmark"], worthAdapting:true, satWarning:null, ideas:["Evening routine with your partner, phone on tripod","Couple night routine: what we actually do","'Things I need my partner to know' storytelling format"], tips:"Raw and unfiltered. Natural lighting, no heavy edits. Emotional hook in first 3 seconds."} },
+  { id:"3", platform:"TIKTOK", thumbnail:"https://picsum.photos/seed/tt005/400/600", caption:"the filter vs no filter GRWM trend 🫣 was NOT expecting this response", postedAt:new Date(Date.now()-7*3600000).toISOString(), category:"GRWM", audio:"Flowers - Miley Cyrus (sped up)", audioTrending:true, creator:{handle:"boldbeautymark", name:"Mark Rivera", followers:7800, bucket:"NANO"}, metrics:{views:89000, likes:8200, comments:1640, shares:1900, saves:2800}, scores:{reach:71, engagement:86, velocity:88, freshness:92, repro:96, satRisk:11, opportunity:92, local:95, fit:97, trend:89, stage:"EMERGING", breakout:"11.4x"}, insight:{whyTrending:"Filter vs no-filter format rewarded by TikTok's authenticity signals. Small creator breaking out strongly in Vaughan/Ontario. 7 hours old — extremely early.", signals:["11.4x breakout from 7.8K account","Posted 7h ago — peak velocity window","Trending audio — still usable"], worthAdapting:true, satWarning:null, ideas:["Filter vs no filter GRWM with your real routine","My actual skin vs TikTok skin","Unfiltered morning vs what I post"], tips:"Split-screen format, same audio. Contrast visible in first 2 seconds. No special gear needed."} },
+  { id:"4", platform:"INSTAGRAM", thumbnail:"https://picsum.photos/seed/ig004/400/600", caption:"5 foods that actually changed my skin in 30 days 🥑🫐 save this!!", postedAt:new Date(Date.now()-30*3600000).toISOString(), category:"FOOD / EDU", audio:null, audioTrending:false, creator:{handle:"nourish.and.glow", name:"Maya Chen", followers:31000, bucket:"MICRO"}, metrics:{views:94000, likes:5600, comments:780, shares:2100, saves:9800}, scores:{reach:65, engagement:96, velocity:72, freshness:80, repro:82, satRisk:8, opportunity:85, local:75, fit:84, trend:83, stage:"RISING", breakout:"3.0x"}, insight:{whyTrending:"The save rate is extraordinary — 10.4% when the strong benchmark is 0.5%. People save this as a reference. Education + beauty crossover with a specific claim hook.", signals:["Save rate 20× benchmark — exceptional","Strong shares — people sending this","Education + beauty: save-weighted category"], worthAdapting:true, satWarning:null, ideas:["5 habits that changed my skin in 30 days","Morning foods I eat for glowing skin","What I eat in a day for clear skin"], tips:"Numbered list hook ('5 things that...') and explicitly say 'save this' in caption and mid-video."} },
+  { id:"5", platform:"TIKTOK", thumbnail:"https://picsum.photos/seed/tt007/400/600", caption:"my 6am morning routine that makes me feel like THAT girl 👸 pt 1", postedAt:new Date(Date.now()-16*3600000).toISOString(), category:"LIFESTYLE", audio:"Levii's Jeans - Beyoncé ft. Post Malone", audioTrending:true, creator:{handle:"routinegoddess", name:"Amira J.", followers:22000, bucket:"MICRO"}, metrics:{views:128000, likes:14100, comments:2800, shares:3600, saves:7200}, scores:{reach:74, engagement:87, velocity:90, freshness:88, repro:93, satRisk:19, opportunity:88, local:70, fit:91, trend:86, stage:"RISING", breakout:"5.8x"}, insight:{whyTrending:"The 'that girl' morning routine format is still gaining momentum. Trending audio, high save rate, strong velocity. 5.8x breakout for 22K creator.", signals:["Velocity spiking — VPH doubled in last 6h","Trending audio still usable","5.8x breakout, 22K micro creator"], worthAdapting:true, satWarning:null, ideas:["Your realistic 'that girl' morning in Canada in winter","Morning routine: what actually happens vs the aesthetic","What I do before 7am (honest version)"], tips:"Same audio. Hook in first 1.5s. Real-time routine, not sped up. Include at least one relatable flaw."} },
+  { id:"6", platform:"TIKTOK", thumbnail:"https://picsum.photos/seed/tt003/400/600", caption:"outfit inspo for the week 🔥 styling tips you need", postedAt:new Date(Date.now()-264*3600000).toISOString(), category:"FASHION", audio:"Espresso - Sabrina Carpenter", audioTrending:true, creator:{handle:"fashionbykira", name:"Kira Styles", followers:4100000, bucket:"MEGA"}, metrics:{views:8200000, likes:390000, comments:14000, shares:62000, saves:88000}, scores:{reach:99, engagement:62, velocity:18, freshness:12, repro:58, satRisk:87, opportunity:22, local:30, fit:60, trend:48, stage:"SATURATED", breakout:"2.0x"}, insight:{whyTrending:"A 4.1M-follower mega-creator getting 8M views is normal account performance. 11 days old. Velocity fading fast. Already mass-copied.", signals:["High raw views (expected from 4.1M account)"], worthAdapting:false, satWarning:"340+ copies already exist. Format is saturated. Late entry will get minimal distribution.", ideas:[], tips:"Skip this trend. Invest time in earlier signals instead."} },
+];
+const STAGES = { EMERGING:{color:"#00ff94",bg:"rgba(0,255,148,0.12)",border:"rgba(0,255,148,0.3)"}, RISING:{color:"#00d4ff",bg:"rgba(0,212,255,0.12)",border:"rgba(0,212,255,0.3)"}, HOT:{color:"#ff6b35",bg:"rgba(255,107,53,0.12)",border:"rgba(255,107,53,0.3)"}, PEAK:{color:"#f59e0b",bg:"rgba(245,158,11,0.12)",border:"rgba(245,158,11,0.3)"}, SATURATED:{color:"#9ca3af",bg:"rgba(156,163,175,0.12)",border:"rgba(156,163,175,0.3)"}, DECLINING:{color:"#ef4444",bg:"rgba(239,68,68,0.12)",border:"rgba(239,68,68,0.3)"} };
+const PLATFORMS = { TIKTOK:{color:"#ff0050",bg:"rgba(255,0,80,0.85)"}, INSTAGRAM:{color:"#e1306c",bg:"rgba(225,48,108,0.85)"} };
+const MODES = { trending_now:{title:"🔥 Trending Now",desc:"Overall best trend score"}, early_opportunities:{title:"⚡ Early Opportunities",desc:"Rising fast, still usable"}, small_creator_breakouts:{title:"🚀 Breakouts",desc:"Small accounts outperforming"}, high_quality_engagement:{title:"💎 Best Engagement",desc:"Strong saves & shares"}, repeatable_formats:{title:"♻️ Repeatable",desc:"Easy to recreate"}, local_trends:{title:"📍 Local",desc:"Relevant to your market"}, save_worthy:{title:"🔖 Save-Worthy",desc:"High save rate content"}, share_driven:{title:"↗️ Share-Driven",desc:"Content people spread"}, overrated_viral:{title:"👻 Overrated",desc:"Big views, low opportunity"} };
+let activeMode = "early_opportunities";
+let activePlatform = "ALL";
+function fmt(n){ if(n>=1e6) return (n/1e6).toFixed(1)+"M"; if(n>=1000) return (n/1000).toFixed(0)+"K"; return n; }
+function timeAgo(iso){ const h = Math.floor((Date.now()-new Date(iso))/3600000); if(h<1) return "<1h ago"; if(h<24) return h+"h ago"; return Math.floor(h/24)+"d ago"; }
+function scoreColor(v){ if(v>=80) return "#00ff94"; if(v>=60) return "#00d4ff"; if(v>=40) return "#f59e0b"; return "#6b7280"; }
+function scoreBg(v){ if(v>=80) return "rgba(0,255,148,0.08)"; if(v>=60) return "rgba(0,212,255,0.08)"; if(v>=40) return "rgba(245,158,11,0.08)"; return "rgba(107,114,128,0.08)"; }
+function sortedVideos(){ let vids=[...VIDEOS]; if(activePlatform!=="ALL") vids=vids.filter(v=>v.platform===activePlatform); switch(activeMode){ case "trending_now": return vids.sort((a,b)=>b.scores.trend-a.scores.trend); case "early_opportunities": return vids.filter(v=>!["SATURATED","DECLINING"].includes(v.scores.stage)).sort((a,b)=>b.scores.opportunity-a.scores.opportunity); case "small_creator_breakouts": return vids.filter(v=>["NANO","MICRO"].includes(v.creator.bucket)).sort((a,b)=>parseFloat(b.scores.breakout)-parseFloat(a.scores.breakout)); case "high_quality_engagement": return vids.sort((a,b)=>b.scores.engagement-a.scores.engagement); case "repeatable_formats": return vids.sort((a,b)=>b.scores.repro-a.scores.repro); case "local_trends": return vids.sort((a,b)=>b.scores.local-a.scores.local); case "save_worthy": return vids.sort((a,b)=>b.metrics.saves-a.metrics.saves); case "share_driven": return vids.sort((a,b)=>b.metrics.shares-a.metrics.shares); case "overrated_viral": return vids.sort((a,b)=>b.scores.reach-a.scores.reach); default: return vids; } }
+function renderCard(v){ const stage=STAGES[v.scores.stage]||STAGES.RISING; const plat=PLATFORMS[v.platform]; const tc=scoreColor(v.scores.trend); const isOpp=v.scores.opportunity>=80; return `<div class="trend-card" onclick="openModal('${v.id}')" style="${isOpp?'background:linear-gradient(160deg,#0d1810,#0d0d0d);':''}"><div class="card-thumb"><img src="${v.thumbnail}" alt="" loading="lazy" /><div class="thumb-badges-top"><span class="platform-badge" style="background:${plat.bg};color:#fff">${v.platform}</span><span class="stage-badge" style="background:${stage.bg};color:${stage.color};border:1px solid ${stage.border}">${v.scores.stage}</span></div><div class="thumb-badges-bot">${v.insight.worthAdapting?'<span class="worth-badge worth-yes">✓ WORTH ADAPTING</span>':'<span class="worth-badge worth-no">⚠ SKIP THIS</span>'}</div>${v.audio&&v.audioTrending ? `<div class="thumb-badges-bot-r"><span class="audio-badge">🎵 TRENDING AUDIO</span></div>`:''}<div class="trend-score-badge" style="border-color:${tc}33"><div class="trend-score-num" style="color:${tc}">${v.scores.trend}</div><div class="trend-score-label">TREND</div></div></div><div class="card-body"><div class="creator-row"><div><span class="creator-handle">@${v.creator.handle}</span><span class="creator-followers">${fmt(v.creator.followers)} followers</span></div><div class="card-meta"><span class="time-ago">${timeAgo(v.postedAt)}</span><span class="breakout-chip">${v.scores.breakout} breakout</span></div></div><p class="card-caption">${v.caption}</p><div class="metrics-row"><span class="metric-chip">👁 ${fmt(v.metrics.views)}</span><span class="metric-chip">♥ ${fmt(v.metrics.likes)}</span><span class="metric-chip">💬 ${fmt(v.metrics.comments)}</span><span class="metric-chip">↗ ${fmt(v.metrics.shares)}</span><span class="metric-chip">🔖 ${fmt(v.metrics.saves)}</span></div><div class="score-pills">${[{val:v.scores.opportunity,label:"Opportunity"},{val:v.scores.engagement,label:"Engagement"},{val:v.scores.repro,label:"Repro"},{val:v.scores.velocity,label:"Velocity"}].map(s=>`<div class="score-pill" style="background:${scoreBg(s.val)};border:1px solid ${scoreColor(s.val)}22"><span class="pill-num" style="color:${scoreColor(s.val)}">${s.val}</span><span class="pill-label">${s.label}</span></div>`).join("")}</div><div class="why-box"><div class="why-label">Why this matters</div><p class="why-text">${v.insight.whyTrending}</p><div class="signal-tags">${v.insight.signals.slice(0,2).map(s=>`<span class="signal-tag">${s}</span>`).join("")}</div></div>${v.insight.satWarning ? `<div class="sat-warning">⚠ ${v.insight.satWarning}</div>` : ""}</div></div>`; }
+function renderGrid(){ const vids=sortedVideos(); document.getElementById("trendGrid").innerHTML=vids.map(renderCard).join(""); document.getElementById("resultCount").textContent=vids.length; document.getElementById("modeTitle").textContent=MODES[activeMode].title; document.getElementById("modeDesc").textContent=MODES[activeMode].desc+" · "+vids.length+" results"; }
+function openModal(id){ const v=VIDEOS.find(x=>x.id===id); if(!v) return; const stage=STAGES[v.scores.stage]||STAGES.RISING; const tc=scoreColor(v.scores.trend); document.getElementById("modalHeaderLeft").innerHTML=`<span class="stage-badge" style="background:${stage.bg};color:${stage.color};border:1px solid ${stage.border};font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px">${v.scores.stage}</span><span style="font-size:12px;color:#666">@${v.creator.handle}</span><span style="font-size:11px;color:#444">·</span><span style="font-size:11px;color:#555">${timeAgo(v.postedAt)}</span>`; document.getElementById("modalLeft").innerHTML=`<img class="modal-thumb" src="${v.thumbnail}" alt="" /><p class="modal-caption">${v.caption}</p>${v.audio ? `<div class="audio-row"><span style="color:#a78bfa">🎵</span><div><div style="font-size:10px;color:#888">${v.audio}</div>${v.audioTrending?'<div style="font-size:9px;color:#7c3aed">Trending audio</div>':''}</div></div>` : ""}<div class="metrics-grid">${[{icon:"👁",label:"Views",val:v.metrics.views},{icon:"♥",label:"Likes",val:v.metrics.likes},{icon:"💬",label:"Comments",val:v.metrics.comments},{icon:"↗",label:"Shares",val:v.metrics.shares},{icon:"🔖",label:"Saves",val:v.metrics.saves},{icon:"👤",label:"Followers",val:v.creator.followers}].map(m=>`<div class="metric-box"><div class="metric-box-label">${m.icon} ${m.label}</div><div class="metric-box-val">${fmt(m.val)}</div></div>`).join("")}</div>`; const bars=[{label:"Opportunity",val:v.scores.opportunity,accent:"#00ff94"},{label:"Engagement",val:v.scores.engagement},{label:"Velocity",val:v.scores.velocity},{label:"Reach",val:v.scores.reach},{label:"Freshness",val:v.scores.freshness},{label:"Reproducibility",val:v.scores.repro},{label:"Local Fit",val:v.scores.local},{label:"Creator Fit",val:v.scores.fit},{label:"Low Saturation",val:100-v.scores.satRisk,accent:100-v.scores.satRisk>60?"#00ff94":"#ef4444"}]; document.getElementById("modalRight").innerHTML=`<div class="master-row"><div><div style="font-size:10px;color:#555;letter-spacing:0.1em;margin-bottom:4px">MASTER TREND SCORE</div><div style="display:flex;align-items:baseline;gap:4px"><span class="master-score-num" style="color:${tc}">${v.scores.trend}</span><span style="font-size:14px;color:#444">/100</span></div></div><div style="text-align:right"><div style="font-size:10px;color:#555;margin-bottom:4px">BREAKOUT</div><div style="font-size:22px;font-weight:700;font-family:var(--mono);color:#a78bfa">${v.scores.breakout}</div><div style="font-size:9px;color:#555">follower count</div></div></div><div class="score-bars-box"><div class="section-label">Score Breakdown</div>${bars.map(b=>{ const c=b.accent||scoreColor(b.val); return `<div class="score-bar-row"><span class="score-bar-label">${b.label}</span><div class="score-bar-track"><div class="score-bar-fill" style="width:${b.val}%;background:${c}"></div></div><span class="score-bar-num" style="color:${c}">${b.val}</span></div>`; }).join("")}</div><div class="section-label">Why It's Trending</div><p class="why-para">${v.insight.whyTrending}</p><div class="signal-tags" style="margin-bottom:14px">${v.insight.signals.map(s=>`<span class="signal-tag">${s}</span>`).join("")}</div>${v.insight.worthAdapting && v.insight.ideas.length ? `<div class="section-label">Content Ideas</div>${v.insight.ideas.map((idea,i)=>`<div class="idea-box"><span class="idea-num">${i+1}.</span>${idea}</div>`).join("")}<div class="adapt-box"><div class="adapt-label">How to Adapt</div><p class="adapt-text">${v.insight.tips}</p></div>` : v.insight.satWarning ? `<div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:12px;margin-top:8px"><div style="font-size:9px;color:#ef4444;letter-spacing:0.1em;margin-bottom:6px">⚠ SATURATION WARNING</div><p style="font-size:11px;color:#f87171;line-height:1.6">${v.insight.satWarning}</p></div>` : ""}`; document.getElementById("modal").style.display="flex"; }
+function closeModal(e){ if(e.target===document.getElementById("modal")){ document.getElementById("modal").style.display="none"; } }
+document.getElementById("modeTabs").addEventListener("click", e=>{ const btn=e.target.closest("[data-mode]"); if(!btn) return; activeMode=btn.dataset.mode; document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); renderGrid(); });
+document.querySelector(".platform-filters").addEventListener("click", e=>{ const btn=e.target.closest("[data-plat]"); if(!btn) return; activePlatform=btn.dataset.plat; document.querySelectorAll(".plat-btn").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); renderGrid(); });
+renderGrid();
+</script>
+</body>
+</html>
